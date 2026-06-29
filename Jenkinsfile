@@ -35,7 +35,7 @@ pipeline{
                     sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
                     docker stop backend-1 || true
                     docker rm backend-1 || true
-                    docker run -d -p 5000:5000 --network ade-dennis-prod --name backend-1 wayshub-be
+                    docker run -d -p 5000:5000 --network app_ade-dennis-prod --name backend-1 wayshub-be
                     exit
                     EOF"""
                 }
