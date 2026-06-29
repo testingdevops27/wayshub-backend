@@ -33,9 +33,9 @@ pipeline{
             steps{
                 sshagent([cred]){
                     sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                    docker stop dennisjenkins-be || true
-                    docker rm dennisjenkins-be || true
-                    docker run -d -p 5000:5000 --name dennisjenkins-be wayshub-be
+                    docker stop backend-1 || true
+                    docker rm backend-1 || true
+                    docker run -d -p 5000:5000 --name backend-1 wayshub-be --network ade-dennis-prod
                     exit
                     EOF"""
                 }
