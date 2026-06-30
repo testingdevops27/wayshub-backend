@@ -2,7 +2,7 @@ def branch = "main"
 def remote = "origin"
 def directory = "~/app/wayshub-backend"
 def server = "ademulyana@103.31.38.220"
-def cred = "ssh-key-devops2"
+def cred = "ssh-key-devops27"
 
 pipeline {
     agent any
