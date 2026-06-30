@@ -3,7 +3,7 @@
     "username": "root",
     "password": "12345678",
     "database": "wayshub",
-    "host": "db",
+    "host": "wayshub-mysql",
     "dialect": "mysql"
   },
   "test": {
