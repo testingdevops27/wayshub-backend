@@ -1,43 +1,54 @@
 def branch = "main"
 def remote = "origin"
-def directory = "~/jenkins/wayshub-backend"
-def server = "devops27@103.193.178.218"
-def cred = "ssh-key-devops27"
+def directory = "~/app/wayshub-backend"
+def server = "ademulyana@103.31.38.220"
+def cred = "ssh-key-ademulyana"
 
-pipeline{
+def imageName = "oneslicedbread/wayshub-backend:staging"
+
+pipeline {
     agent any
-    stages{
-        stage('repo pull'){
-            steps{
-                sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+
+    stages {
+        stage('Repository Pull') {
+            steps {
+                sshagent([cred]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${server} '
                     cd ${directory}
                     git pull ${remote} ${branch}
-                    exit
-                    EOF"""
+                    '
+                    """
                 }
             }
         }
-        stage('docker build'){
-            steps{
-                sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+
+        stage('Docker Build') {
+            steps {
+                sshagent([cred]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${server} '
                     cd ${directory}
-                    docker build -t wayshub-be .
-                    exit
-                    EOF"""
+                    docker build -t ${imageName} .
+                    '
+                    """
                 }
             }
         }
-        stage('docker run'){
-            steps{
-                sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                    docker stop backend-1 || true
-                    docker rm backend-1 || true
-                    docker run -d -p 5000:5000 --network app_ade-dennis-prod --name backend-1 wayshub-be
-                    exit
-                    EOF"""
+
+        stage('Docker Deploy') {
+            steps {
+                sshagent([cred]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${server} '
+                    docker stop wayshub-backend-staging || true
+                    docker rm wayshub-backend-staging || true
+                    docker run -d \
+                        --name wayshub-backend-staging \
+                        -p 3101:5000 \
+                        ${imageName}
+                    '
+                    """
                 }
             }
         }
