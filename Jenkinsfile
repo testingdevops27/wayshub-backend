@@ -1,27 +1,32 @@
 def branch = "main"
 def remote = "origin"
-def directory = "~/jenkins/wayshub-backend"
-def server = "devops27@103.193.178.218"
-def cred = "ssh-key-devops27"
+def directory = "~/app/wayshub-backend"
+def server = "ademulyana@103.31.38.220"
+def cred = "ssh-key-ademulyana"
 
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage('repo pull'){
-            steps{
-                sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+
+    stages {
+
+        stage('Repository Pull') {
+            steps {
+                sshagent([cred]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${server} '
                     cd ${directory}
                     git pull ${remote} ${branch}
-                    exit
-                    EOF"""
+                    '
+                    """
                 }
             }
         }
-        stage('docker build'){
-            steps{
-                sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+
+        stage('Docker Build') {
+            steps {
+                sshagent([cred]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${server} '
                     cd ${directory}
                     docker build -t djsn98/devops27-wayshub-backend-2:v1.0 .
                     exit
